@@ -1,0 +1,32 @@
+annotations:
+  cost: none
+  read_only: true
+  requires_confirmation: false
+description: Compare production table schema against target schema definition.
+input_schema:
+  additionalProperties: false
+  properties:
+    compatibility_mode:
+      type: string
+    current_schema:
+      type: string
+    target_schema:
+      type: string
+  required:
+  - current_schema
+  - target_schema
+  type: object
+name: detect-schema-drift
+output_schema:
+  additionalProperties: false
+  properties:
+    confidence:
+      type: number
+    data:
+      type: string
+    status:
+      type: string
+  required:
+  - status
+  - data
+  type: object

@@ -1,0 +1,6 @@
+spec_version: "0.1.0"
+name: prism-data-pipeline
+version: "0.1.0"
+description: "Autonomous data pipeline architecture, schema drift detection, and data lineage tracking agent with automated maker-checker data contract validation."
+model:
+  preferred: llama-3.3-70b-versatile

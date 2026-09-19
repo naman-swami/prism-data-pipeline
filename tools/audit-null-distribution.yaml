@@ -1,0 +1,29 @@
+annotations:
+  cost: none
+  read_only: true
+  requires_confirmation: false
+description: Compute statistical null and cardinality thresholds across dataset partitions.
+input_schema:
+  additionalProperties: false
+  properties:
+    dataset_ref:
+      type: string
+    partition_date:
+      type: string
+  required:
+  - dataset_ref
+  type: object
+name: audit-null-distribution
+output_schema:
+  additionalProperties: false
+  properties:
+    confidence:
+      type: number
+    data:
+      type: string
+    status:
+      type: string
+  required:
+  - status
+  - data
+  type: object

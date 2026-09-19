@@ -1,0 +1,28 @@
+{
+  "name": "prism-data-pipeline",
+  "instructions": "You are prism-data-pipeline. Detect upstream schema anomalies, prevent breaking changes across analytical pipelines, and automate data lineage reconciliation.",
+  "model": "gpt-4o",
+  "tools": [
+    {
+      "type": "function",
+      "function": {
+        "name": "detect-schema-drift",
+        "description": "Compare production table schema against target schema definition."
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "validate-data-lineage",
+        "description": "Trace column-level data transformations across DAG dependencies."
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "audit-null-distribution",
+        "description": "Compute statistical null and cardinality thresholds across dataset partitions."
+      }
+    }
+  ]
+}
