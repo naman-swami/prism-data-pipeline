@@ -1,0 +1,18 @@
+[
+  {
+    "table_name": "fact_orders",
+    "rows_ingested": 1500000,
+    "null_count_customer_id": 45,
+    "freshness_latency_minutes": 12,
+    "mean_order_value": 85.5,
+    "baseline_mean": 84.0
+  },
+  {
+    "table_name": "dim_user_profiles",
+    "rows_ingested": 24000,
+    "null_count_customer_id": 1200,
+    "freshness_latency_minutes": 140,
+    "mean_order_value": 0.0,
+    "baseline_mean": 0.0
+  }
+]

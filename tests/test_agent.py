@@ -1,24 +1,18 @@
+import os
 import pytest
-from src.schema_engine import SchemaDriftEngine
+from quality.schema_contract_validator import DataQualityPipelineEngine
 
-def test_compatible_schema_extension():
-    engine = SchemaDriftEngine()
-    cur = {"id": "int", "name": "string"}
-    inc = {"id": "int", "name": "string", "email": "string"}
-    res = engine.evaluate_schema_drift(cur, inc)
-    assert res["is_compatible"] is True
-    assert res["recommended_action"] == "PROMOTE_MIGRATION"
+def test_pipeline_healthy():
+    res = DataQualityPipelineEngine.audit_table_quality(
+        table_name="test_table", total_rows=10000, null_count=10, latency_mins=30, observed_mean=50.0, baseline_mean=50.0
+    )
+    assert res["pipeline_status"] == "HEALTHY"
+    assert res["anomalies_count"] == 0
 
-def test_breaking_type_change():
-    engine = SchemaDriftEngine()
-    cur = {"id": "int", "amount": "float"}
-    inc = {"id": "int", "amount": "string"}
-    res = engine.evaluate_schema_drift(cur, inc)
-    assert res["is_compatible"] is False
-    assert res["recommended_action"] == "BLOCK_PIPELINE_AND_ALERT"
-
-def test_column_null_rate_check():
-    engine = SchemaDriftEngine()
-    q = engine.audit_column_quality(row_count=1000, null_count=20, null_threshold_pct=0.05)
-    assert q["quality_passed"] is True
-    assert q["null_rate"] == 0.02
+def test_sla_breach_degraded():
+    res = DataQualityPipelineEngine.audit_table_quality(
+        table_name="test_table", total_rows=10000, null_count=10, latency_mins=120, observed_mean=50.0, baseline_mean=50.0
+    )
+    assert res["pipeline_status"] == "DEGRADED"
+    types = [a["type"] for a in res["anomalies"]]
+    assert "SLA_FRESHNESS_BREACH" in types

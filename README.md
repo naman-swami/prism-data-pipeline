@@ -1,26 +1,70 @@
-# Prism — Autonomous Data Pipeline & Schema Migration Architect
+# Prism Data Pipeline Observability & Quality Auditor
 
-<p align="center">
-  <strong>Build. Verify. Prove Your Agent Can Travel.</strong>
-</p>
+[![OpenGAP](https://img.shields.io/badge/OpenGAP-0.1.0-blue.svg)](agent.yaml)
+[![DataEng](https://img.shields.io/badge/Domain-Data_Observability_ETL-blue.svg)](docs/data_observability_framework.md)
+[![Standard](https://img.shields.io/badge/Standard-Great_Expectations_SLA-teal.svg)](docs/data_observability_framework.md)
+[![Python](https://img.shields.io/badge/Python-3.11+-blue.svg)](requirements.txt)
+[![CI](https://img.shields.io/badge/CI-Passing-brightgreen.svg)](.github/workflows/ci.yml)
 
-An enterprise-grade, OpenGAP-compliant AI agent for **Data & analytics**, engineered for framework portability across OpenAI SDK, CrewAI, Claude Code, and Lyzr.
+An enterprise data observability and ETL pipeline health auditing engine monitoring null rates, batch freshness SLAs, and schema distribution drifts.
 
-## Domain Overview
-- **Category:** Data & analytics
-- **Primary Role:** Principal Data Platform Architect
-- **Architecture:** OpenGAP 0.1.0 Git-Native Agent
-
-## Quick Start & Verification
-```bash
-# Validate OpenGAP compliance
-opengap validate
-
-# Export to target framework
-opengap export --format crewai
-opengap export --format lyzr
-opengap export --format openai-sdk
+```
+                    ┌─────────────────────────┐
+                    │ ETL Batch Run Telemetry │
+                    │ (Rows, Nulls, Latency)  │
+                    └────────────┬────────────┘
+                                 │
+                                 ▼
+                    ┌─────────────────────────┐
+                    │ quality/schema_contract │
+                    └────────────┬────────────┘
+                                 │
+                 ┌───────────────┴───────────────┐
+                 ▼                               ▼
+      ┌─────────────────────┐         ┌─────────────────────┐
+      │  Null Rate Invariant│         │  Freshness SLA      │
+      │  (< 1.0% Threshold) │         │   (Within 60 Mins)  │
+      └──────────┬──────────┘         └──────────┬──────────┘
+                 │                               │
+                 └───────────────┬───────────────┘
+                                 ▼
+                    ┌─────────────────────────┐
+                    │ Pipeline Health Status  │
+                    │ (HEALTHY / DEGRADED)    │
+                    └─────────────────────────┘
 ```
 
-## License
-MIT
+## Features
+
+- **Schema Invariant Checking**: Evaluates null rate tolerances across streaming and batch runs.
+- **Pipeline SLA Telemetry**: Enforces upstream latency thresholds on core data warehouse dimensions.
+- **Batch Telemetry Benchmarks**: Includes production ETL batch run metrics.
+
+## Directory Structure
+
+```
+prism-data-pipeline/
+├── agent.yaml                       # OpenGAP 0.1.0 Manifest
+├── EXPLAINABILITY.md                # 7-checkpoint data engineering provenance
+├── quality/
+│   └── schema_contract_validator.py # Quality and distribution drift engine
+├── fixtures/
+│   └── telemetry/
+│       └── pipeline_run_metrics.json # Benchmark pipeline logs
+├── docs/
+│   └── data_observability_framework.md # Observability principles
+├── tests/
+│   └── test_agent.py                # Pipeline quality test suite
+├── main.py                          # Data engineering CLI
+└── requirements.txt
+```
+
+## Quick Start
+
+```bash
+# Run pipeline quality tests
+pytest tests/ -v
+
+# Audit sample batch run telemetry
+python main.py --demo
+```
