@@ -55,7 +55,7 @@ prism-data-pipeline/
 │   └── data_observability_framework.md # Observability principles
 ├── tests/
 │   └── test_agent.py                # Pipeline quality test suite
-├── main.py                          # Data engineering CLI
+├── pipeline.py                          # Data engineering CLI
 └── requirements.txt
 ```
 
@@ -66,5 +66,5 @@ prism-data-pipeline/
 pytest tests/ -v
 
 # Audit sample batch run telemetry
-python main.py --demo
+python pipeline.py --demo
 ```

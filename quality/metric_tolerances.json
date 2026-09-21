@@ -1,0 +1,5 @@
+{
+  "max_null_pct": 1.0,
+  "max_latency_minutes": 60,
+  "max_drift_pct": 15.0
+}
