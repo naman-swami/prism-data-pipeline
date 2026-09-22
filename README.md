@@ -1,70 +1,44 @@
-# Prism Data Pipeline Observability & Quality Auditor
+# Prism Data Quality & Observability Pipeline
 
-[![OpenGAP](https://img.shields.io/badge/OpenGAP-0.1.0-blue.svg)](agent.yaml)
-[![DataEng](https://img.shields.io/badge/Domain-Data_Observability_ETL-blue.svg)](docs/data_observability_framework.md)
-[![Standard](https://img.shields.io/badge/Standard-Great_Expectations_SLA-teal.svg)](docs/data_observability_framework.md)
-[![Python](https://img.shields.io/badge/Python-3.11+-blue.svg)](requirements.txt)
-[![CI](https://img.shields.io/badge/CI-Passing-brightgreen.svg)](.github/workflows/ci.yml)
+> **Automated Data Contract Validation, Freshness Monitoring, and Drift Detection**  
+> Real-Time Table Observability for Enterprise Data Warehouses and Lakehouses.
 
-An enterprise data observability and ETL pipeline health auditing engine monitoring null rates, batch freshness SLAs, and schema distribution drifts.
+---
 
-```
-                    ┌─────────────────────────┐
-                    │ ETL Batch Run Telemetry │
-                    │ (Rows, Nulls, Latency)  │
-                    └────────────┬────────────┘
-                                 │
-                                 ▼
-                    ┌─────────────────────────┐
-                    │ quality/schema_contract │
-                    └────────────┬────────────┘
-                                 │
-                 ┌───────────────┴───────────────┐
-                 ▼                               ▼
-      ┌─────────────────────┐         ┌─────────────────────┐
-      │  Null Rate Invariant│         │  Freshness SLA      │
-      │  (< 1.0% Threshold) │         │   (Within 60 Mins)  │
-      └──────────┬──────────┘         └──────────┬──────────┘
-                 │                               │
-                 └───────────────┬───────────────┘
-                                 ▼
-                    ┌─────────────────────────┐
-                    │ Pipeline Health Status  │
-                    │ (HEALTHY / DEGRADED)    │
-                    └─────────────────────────┘
-```
-
-## Features
-
-- **Schema Invariant Checking**: Evaluates null rate tolerances across streaming and batch runs.
-- **Pipeline SLA Telemetry**: Enforces upstream latency thresholds on core data warehouse dimensions.
-- **Batch Telemetry Benchmarks**: Includes production ETL batch run metrics.
-
-## Directory Structure
+### Data Reliability SLA Dimensions
 
 ```
-prism-data-pipeline/
-├── agent.yaml                       # OpenGAP 0.1.0 Manifest
-├── EXPLAINABILITY.md                # 7-checkpoint data engineering provenance
-├── quality/
-│   └── schema_contract_validator.py # Quality and distribution drift engine
-├── fixtures/
-│   └── telemetry/
-│       └── pipeline_run_metrics.json # Benchmark pipeline logs
-├── docs/
-│   └── data_observability_framework.md # Observability principles
-├── tests/
-│   └── test_agent.py                # Pipeline quality test suite
-├── pipeline.py                          # Data engineering CLI
-└── requirements.txt
+              Ingested Table Partition (Parquet / Iceberg)
+                                   │
+         ┌─────────────────────────┼─────────────────────────┐
+         ▼                         ▼                         ▼
+   [Freshness SLA]          [Schema Contracts]       [Distribution Drift]
+   Max Latency < 60 min     Null Rate < 0.5%         Z-Score Drift (|Z| < 3.0)
+   Staleness Alert          Type Compatibility        Outlier Alert
 ```
 
-## Quick Start
+---
+
+### Pipeline Observability Health Report
+
+Sample health check generated from `fixtures/telemetry/pipeline_run_metrics.json`:
+
+| Table Target | Freshness Status | Null-Rate Check | Anomaly Drift | Pipeline Verdict |
+| :--- | :--- | :--- | :--- | :--- |
+| **`fct_orders`** | 12m latency (SLA: 60m) | 0.02% (PASS) | $|Z| = 0.42$ | **HEALTHY** |
+| **`dim_customers`** | 25m latency (SLA: 120m) | 0.00% (PASS) | $|Z| = 0.18$ | **HEALTHY** |
+| **`fct_clickstream`**| 145m latency (BREACH) | 4.80% (FAIL) | $|Z| = 3.91$ | **SLA BREACH ALERT** |
+
+---
+
+### Pipeline CLI Execution
 
 ```bash
-# Run pipeline quality tests
-pytest tests/ -v
-
-# Audit sample batch run telemetry
+# Inspect pipeline freshness and table contracts
 python pipeline.py --demo
+
+# Run data observability test suite
+pytest tests/ -v
 ```
+
+Data contract definitions, schema specifications, and SLA breach alert protocols are governed by [DATA_SLA_CONTRACTS.md](DATA_SLA_CONTRACTS.md).
